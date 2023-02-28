@@ -2,8 +2,6 @@
 
 The weather app, built using React technology, is designed to observe temperature and humidity levels in a given city. The user has the ability to add new cities to observe or remove them. The application connects to an external API every minute and downloads the current temperature and humidity data of the observed cities. The data is presented in a graph. The library used to create the graph is chart JS. 
 
-Translated with www.DeepL.com/Translator (free version)
-
 ## Available Scripts
 
 In the project directory, you can run:
