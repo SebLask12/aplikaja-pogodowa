@@ -1,0 +1,22 @@
+.active {
+  background-color: #2d392d;
+}
+
+.city {
+  margin-bottom: 1rem;
+}
+.button {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete {
+  all: unset;
+  cursor: pointer;
+  position: absolute;
+  right: 10%;
+  font-size: 2.4rem;
+  color: orange;
+}

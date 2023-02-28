@@ -1,0 +1,11 @@
+.App{
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    gap: 1rem
+
+}
+
+.cities {
+    flex-basis: 30rem
+}
