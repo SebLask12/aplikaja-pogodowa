@@ -8,7 +8,7 @@ function Chart({ city, onDataChangeHandler, chartData }) {
   const chartContainer = useRef(null);
   const chartInstance = useRef(null);
 
-  const [isLoaded, setIsLoaded] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [dataChart, setDataChart] = useState([]);
   const [isError, setIsError] = useState(false);
 
@@ -64,6 +64,7 @@ function Chart({ city, onDataChangeHandler, chartData }) {
     } catch (error) {
       console.error(error);
       setIsError(true);
+      setIsLoaded(true);
     }
   }
 
@@ -114,6 +115,8 @@ function Chart({ city, onDataChangeHandler, chartData }) {
       const context = chartContainer.current.getContext("2d");
       chartInstance.current = new ChartJS(context, chartConfig);
 
+      setIsLoaded(true);
+
       return () => {
         if (chartInstance.current) {
           chartInstance.current.destroy();
@@ -125,8 +128,7 @@ function Chart({ city, onDataChangeHandler, chartData }) {
   }
 
   useEffect(() => {
-    //this function will run only once
-    setIsLoaded(true);
+
     // if are stored data render the chart with the stored data
     if (chartData) {
       renderChart(city.name, chartData);
@@ -145,10 +147,10 @@ function Chart({ city, onDataChangeHandler, chartData }) {
   return (
     <>
       <Card className={classes.chart}>
-        <h2 style={{ color: "white" }}>{city.name}</h2>
-        {isError && <h3 style={{ color: "white" }}>Failed to download data</h3>}
+        <p className={classes.title}>{city.name}</p>
+        {isError && <h3>Failed to download data</h3>}
         {!isLoaded && <div>Loading data...</div>}
-        {isLoaded && <canvas ref={chartContainer}></canvas>}
+        <canvas ref={chartContainer}></canvas>
       </Card>
     </>
   );

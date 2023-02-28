@@ -2,6 +2,10 @@
   flex-basis: 60%;
 }
 
+.title{
+  font-size: 1.8rem;
+}
+
 button {
   width: 7rem;
   padding: 0.7rem;
