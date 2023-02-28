@@ -1,15 +1,26 @@
-import React from "react";
+import React, {useState} from "react";
 
 function AddCity({ onCancel, onAddCity }) {
+
+  
   const sumbitHandler = (event) => {
     event.preventDefault();
+    const cityName = event.target.city.value;
+    if (!validationCheck(cityName)) {
+      alert(`City name is required`);
+      return onCancel();
+    }
     const cityData = {
-      name: event.target.city.value,
+      name: cityName,
       id: Math.floor(Math.random() * 1000),
     };
     onAddCity(cityData);
     onCancel();
   };
+
+  const validationCheck = (input) => {
+    return input.trim().length === 0 ? false : true;
+  }
 
   return (
     <form onSubmit={sumbitHandler}>
@@ -19,11 +30,12 @@ function AddCity({ onCancel, onAddCity }) {
           type="text"
           name="city"
           id="city"
+          autoFocus={true}
         />
       </p>
       <p>
         <button
-          type="cancel"
+          type="reset"
           onClick={onCancel}
         >
           Cancel

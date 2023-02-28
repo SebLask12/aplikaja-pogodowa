@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 
 import classes from "./Cities.module.css";
 
@@ -6,29 +6,20 @@ import Card from "./Card";
 import City from "./City";
 import AddCity from "./AddCity";
 
-function Cities({
-  onAddCity,
-  cityList,
-  onSelectCityMain,
-  onDeleteCityHandler,
-}) {
+function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
   const [isAddingCity, setIsAddingCity] = useState(false);
 
-  const cancelHandler = () => {
+  const stopAddingCity = () => {
     setIsAddingCity(false);
   };
 
-  const addCityButtonHandler = () => {
+  const startAddingCity = () => {
     setIsAddingCity(true);
   };
 
-  const addCityHandler = (cityData) => {
+  const addCity = (cityData) => {
     onAddCity(cityData);
-    cancelHandler();
-  };
-
-  const selectedCityHandler = (city) => {
-    onSelectCityMain(city);
+    stopAddingCity();
   };
 
   return (
@@ -40,18 +31,15 @@ function Cities({
             <City
               key={city.id}
               city={city}
-              selectedCity={selectedCityHandler}
               onDelete={onDeleteCityHandler}
             />
           ))}
         </ul>
-        {!isAddingCity && (
-          <button onClick={addCityButtonHandler}>Add City</button>
-        )}
+        {!isAddingCity && <button onClick={startAddingCity}>Add City</button>}
         {isAddingCity && (
           <AddCity
-            onAddCity={addCityHandler}
-            onCancel={cancelHandler}
+            onAddCity={addCity}
+            onCancel={stopAddingCity}
           />
         )}
       </Card>

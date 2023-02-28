@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 import DeleteCity from "./DeleteCity";
 
@@ -6,7 +6,7 @@ import Card from "./Card";
 import classes from "./City.module.css";
 
 function city({ city, onDelete }) {
-  const [isClicked, setIsClicked] = React.useState(false);
+  const [isClicked, setIsClicked] = useState(false);
 
   const onClickHnadler = (e) => {
     e.preventDefault();

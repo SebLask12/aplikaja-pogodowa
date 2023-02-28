@@ -21,12 +21,12 @@ function Chart({ city, onDataChangeHandler, chartData }) {
     onDataChangeHandler(dataChart, city.id);
   }, [dataChart]);
 
-  function storeData(time, data) {
+  const storeData = (time, data) => {
     //this function will store the data in the array
     setDataChart((prevData) => [...prevData, { time, data }]);
   }
 
-  function addData(chart, label, data) {
+  const addData = (chart, label, data) => {
     //this function will add data to the chart
     const tempIndex = 0;
     const humidityIndex = 1;
@@ -37,7 +37,7 @@ function Chart({ city, onDataChangeHandler, chartData }) {
     chart.update();
   }
 
-  function getTimeLabel() {
+  const getTimeLabel = () => {
     //this function will return the time label
     const date = new Date();
     const hours = date.getHours();
