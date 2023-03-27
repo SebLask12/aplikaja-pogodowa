@@ -22,6 +22,8 @@ function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
     stopAddingCity();
   };
 
+  console.log(cityList)
+
   return (
     <>
       <Card className={classes.cities}>
