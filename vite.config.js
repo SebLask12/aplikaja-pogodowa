@@ -5,5 +5,5 @@ export default {
     css: {
         devSourcemap: true,
     },
-    server:{host:true},
+    server:{host:false},
 }

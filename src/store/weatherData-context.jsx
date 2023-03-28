@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const WeatherDataContext = React.createContext({
   weatherData: [],
@@ -13,17 +13,22 @@ const WeatherDataContextProvider = (props) => {
   const [weatherData, setWeatherData] = useState([]);
   const [isLoadedData, setIsLoadedData] = useState(false);
 
+  useEffect(() => {
+    saveWehatherDataToLocalHandler();
+    console.log('effect', weatherData);
+  },[weatherData])
+
   const loadWeatherDataHandler = () => {
     //this is a function that returns a list of cities
     const weatherDataS = JSON.parse(localStorage.getItem("weatherData"));
-    console.log(weatherDataS);
-    setWeatherData(weatherDataS);
     setIsLoadedData(true);
-    console.log(weatherData);
+    if(!weatherDataS) return;
+    setWeatherData(weatherDataS);
   };
 
   const addCityHandler = (data) => {
     //this is a function that adds a new city to the list, saves it to local storage
+    console.log(data)
     setWeatherData((prevState) => {
       if (prevState === null) {
         return [data];
@@ -31,12 +36,10 @@ const WeatherDataContextProvider = (props) => {
         return prevState.concat(data);
       }
     });
-    saveWehatherDataToLocalHandler();
   };
   const remvoeCityHandler = (id) => {
     //this is a function that deletes a city from the list, saves it to local storage
     setWeatherData((prevState) => prevState.filter((city) => city.id !== id));
-    saveWehatherDataToLocalHandler();
   };
 
   const newMeasureHandler = (data, cityId) => {
@@ -54,13 +57,12 @@ const WeatherDataContextProvider = (props) => {
         }
       })
     );
-
-    saveWehatherDataToLocalHandler();
   };
 
   const saveWehatherDataToLocalHandler = () => {
     //this is a function that saves a list of cities to local storage
     localStorage.setItem("weatherData", JSON.stringify(weatherData));
+    console.log('save');
     console.log(weatherData);
   };
 
