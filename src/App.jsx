@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 
 import clasess from "./App.module.css";
 import Cities from "./components/UI/Cities";
@@ -9,20 +9,22 @@ import { WeatherDataContext } from "./store/weatherData-context";
 
 function App() {
   const weatherCtx = useContext(WeatherDataContext);
-  console.log(weatherCtx.weatherData);
+
+  console.log("renderApp", weatherCtx.weatherData);
+
   useEffect(() => {
     //this function will run when the component mounts
     weatherCtx.loadWeatherData();
   }, []);
 
   const whenLoaded = () => {
-    if (weatherCtx.weatherData.length > 1) {
+    if (weatherCtx.weatherData.length >= 1) {
       return weatherCtx.weatherData.map((city) => (
         <Chart
           key={city.id}
           city={city}
           onDataChangeHandler={weatherCtx.newMeasure}
-          chartData={city}
+          chartData={city.data && city.data}
         />
       ));
     } else {
@@ -36,15 +38,25 @@ function App() {
 
   return (
     <div className={clasess.App}>
-      <Cities
-        onAddCity={weatherCtx.addCity}
-        cityList={weatherCtx.weatherData}
-        className={clasess.cities}
-        onDeleteCityHandler={weatherCtx.removeCity}
-      />
-      {!weatherCtx.isLoadedData && (
-        <div style={{ color: "black" }}>Loading cities</div>
-      )}
+        <Cities
+          onAddCity={weatherCtx.addCity}
+          cityList={weatherCtx.weatherData}
+          className={clasess.cities}
+          onDeleteCityHandler={weatherCtx.removeCity}
+        />
+        {!weatherCtx.isLoadedData && (
+          <div style={{ color: "black" }}>Loading cities</div>
+        )}
+        {/* {dataList} */}
+        {weatherCtx.isLoadedData &&
+          weatherCtx.weatherData.map((city) => (
+            <Chart
+              key={city.id}
+              city={city}
+              onDataChangeHandler={weatherCtx.newMeasure}
+              chartData={city.data && city.data}
+            />
+          ))}
     </div>
   );
 }

@@ -9,6 +9,8 @@ import AddCity from "./AddCity";
 function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
   const [isAddingCity, setIsAddingCity] = useState(false);
 
+  console.log('render cities');
+
   const stopAddingCity = () => {
     setIsAddingCity(false);
   };
@@ -21,8 +23,6 @@ function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
     onAddCity(cityData);
     stopAddingCity();
   };
-
-  console.log(cityList)
 
   return (
     <>

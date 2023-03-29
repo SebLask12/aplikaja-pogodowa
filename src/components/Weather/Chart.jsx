@@ -12,19 +12,31 @@ function Chart({ city, onDataChangeHandler, chartData }) {
   const [dataChart, setDataChart] = useState([]);
   const [isError, setIsError] = useState(false);
 
+  console.log("renderChart", dataChart);
+
   //Configure gloabl chart
   ChartJS.defaults.color = "#9cafbb";
   ChartJS.defaults.borderColor = "#5e6c77";
 
   useEffect(() => {
+    console.log("mount");
+  }, []);
+
+  useEffect(() => {
     //this function will run when array is updated and lift up the dataChart to app.jsx
-    onDataChangeHandler(dataChart, city.id);
+    console.log("zmiana dartChart");
+    if(dataChart.length > 0) {
+      onDataChangeHandler(dataChart, city.id);
+      console.log('Poszlo')
+    }
+
   }, [dataChart]);
 
   const storeData = (time, data) => {
     //this function will store the data in the array
+    console.log("zapisz DartChart");
     setDataChart((prevData) => [...prevData, { time, data }]);
-  }
+  };
 
   const addData = (chart, label, data) => {
     //this function will add data to the chart
@@ -35,7 +47,7 @@ function Chart({ city, onDataChangeHandler, chartData }) {
     chart.data.datasets[tempIndex].data.push(data.temp);
     chart.data.datasets[humidityIndex].data.push(data.humidity);
     chart.update();
-  }
+  };
 
   const getTimeLabel = () => {
     //this function will return the time label
@@ -43,7 +55,7 @@ function Chart({ city, onDataChangeHandler, chartData }) {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     return `${hours}:${minutes < 10 ? `0${minutes}` : minutes}`;
-  }
+  };
 
   async function getChartData(city) {
     //this function will get the data from the API
@@ -128,11 +140,12 @@ function Chart({ city, onDataChangeHandler, chartData }) {
   }
 
   useEffect(() => {
-
     // if are stored data render the chart with the stored data
     if (chartData) {
+      console.log("rendering chart");
+      console.log(chartData)
       renderChart(city.name, chartData);
-      setDataChart(chartData.data);
+      setDataChart(chartData);
     } else if (!chartData) renderChart(city.name);
 
     setInterval(async function () {

@@ -13,7 +13,6 @@ function AddCity({ onCancel, onAddCity }) {
     const cityData = {
       name: cityName,
       id: Math.floor(Math.random() * 1000),
-      data: [],
     };
     onAddCity(cityData);
     onCancel();
