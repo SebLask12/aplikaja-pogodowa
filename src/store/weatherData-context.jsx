@@ -13,9 +13,9 @@ const WeatherDataContextProvider = (props) => {
   const [weatherData, setWeatherData] = useState([]);
   const [isLoadedData, setIsLoadedData] = useState(false);
 
-  useEffect(()=> {
-    console.log('mount store')
-  },[])
+  useEffect(() => {
+    console.log("mount store");
+  }, []);
 
   useEffect(() => {
     if (isLoadedData) {
@@ -50,13 +50,18 @@ const WeatherDataContextProvider = (props) => {
   const newMeasureHandler = (data, cityId) => {
     //this is a function that updates the weather data for a city, saves it to local storage
     setWeatherData((prevState) => {
-      console.log(prevState, data, cityId);
       return prevState.map((city) => {
-        if (cityId === city.id) {
+        if (cityId === city.id && !city.data) {
           return {
             name: city.name,
             id: city.id,
             data: [data],
+          };
+        } else if (cityId === city.id) {
+          return {
+            name: city.name,
+            id: city.id,
+            data: city.data.concat(data),
           };
         } else {
           return city;
