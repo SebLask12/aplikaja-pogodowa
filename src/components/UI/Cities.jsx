@@ -5,6 +5,7 @@ import classes from "./Cities.module.css";
 import Card from "./Card";
 import City from "./City";
 import AddCity from "./AddCity";
+import Button from "./StyledElements/Button";
 
 function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
   const [isAddingCity, setIsAddingCity] = useState(false);
@@ -37,7 +38,7 @@ function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
             />
           ))}
         </ul>
-        {!isAddingCity && <button onClick={startAddingCity}>Add City</button>}
+        {!isAddingCity && <Button onClick={startAddingCity}>Add City</Button>}
         {isAddingCity && (
           <AddCity
             onAddCity={addCity}

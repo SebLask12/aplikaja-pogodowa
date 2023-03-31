@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chart as ChartJS } from "chart.js/auto";
 
+import Modal from "../UI/Modal/Modal";
+
 // import ChartConfig from "./ChartConfig";
 import getActualTimeLabel from "../../hooks/getActualTimeLabel";
 import getDataCity from "../../hooks/getDataCity";
@@ -12,6 +14,7 @@ function Chart({ city, onDataChangeHandler }) {
   const chartContainer = useRef(null);
   const chartInstance = useRef(null);
 
+  const [isOpen, setIsOpen] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -48,7 +51,7 @@ function Chart({ city, onDataChangeHandler }) {
   async function renderChart(city, dataReverted) {
     try {
       const data = await getDataCity(city);
-      if (data.status=== 'error') throw new Error(data.message);
+      if (data.status === "error") throw new Error(data.message);
 
       let timeArr = [];
       let tempArr = [];
@@ -126,7 +129,12 @@ function Chart({ city, onDataChangeHandler }) {
     <>
       <Card className={classes.chart}>
         <p className={classes.title}>{city.name}</p>
-        {isError && <h3>Failed to download data</h3>}
+        {/* {isError && (
+          <Modal>
+            <h3>Wrong City name</h3>
+            <button onClick={onCloseHandler}>No</button>
+          </Modal>
+        )} */}
         {!isLoaded && <div>Loading data...</div>}
         <canvas ref={chartContainer}></canvas>
       </Card>
