@@ -1,4 +1,4 @@
-const getActualTimeLabel = () => {
+const useActualTimeLabel = () => {
     //this function will return the time label
     const date = new Date();
     const hours = date.getHours();
@@ -6,4 +6,4 @@ const getActualTimeLabel = () => {
     return `${hours}:${minutes < 10 ? `0${minutes}` : minutes}`;
   };
 
-  export default getActualTimeLabel;
+  export default useActualTimeLabel;

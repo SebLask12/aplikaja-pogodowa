@@ -2,7 +2,7 @@ import React, {useState} from "react";
 
 import DeleteCity from "./DeleteCity";
 
-import Card from "./Card";
+import Card from "./../StyledElements/Card";
 import classes from "./City.module.css";
 
 function city({ city, onDelete }) {

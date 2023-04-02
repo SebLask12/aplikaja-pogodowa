@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState, useReducer } from "react";
 
-import Modal from "./Modal/Modal";
-import Button from "./StyledElements/Button";
-import getDataCity from "../../hooks/getDataCity";
+import Modal from "../Modal/Modal";
+import Button from "../StyledElements/Button";
+import useDataCity from "../../../hooks/useDataCity";
 
 import classes from "./AddCity.module.css";
 
@@ -16,14 +16,10 @@ function AddCity({ onCancel, onAddCity }) {
 
   useEffect(() => {
     const delayInput = setTimeout(() => {
-      console.log("check vaild");
-      console.log(inputValue);
       if (inputValue !== null) {
         if (validationCheck(inputValue)) {
           setValidClass(classes.vailidityOk);
-          setIsValid(true);
         } else {
-          setIsValid(false);
           setValidClass(classes.validityNotOk);
         }
       }
@@ -31,7 +27,6 @@ function AddCity({ onCancel, onAddCity }) {
 
     return () => {
       clearTimeout(delayInput);
-      console.log("clearInterval");
     };
   }, [inputValue]);
 
@@ -47,12 +42,12 @@ function AddCity({ onCancel, onAddCity }) {
       return setIsWrongInput(true);
     }
 
-    if (!isValid) {
+    if (!validationCheck(inputValue)) {
       setErrorMessage(`Invalid city name! ${inputValue}`);
       return setIsWrongInput(true);
     }
 
-    const res = await getDataCity(inputValue);
+    const res = await useDataCity(inputValue);
     if (res.status === "error") {
       setErrorMessage(`City "${inputValue}" not found`)
       return setIsWrongInput(true);
@@ -68,7 +63,6 @@ function AddCity({ onCancel, onAddCity }) {
   };
 
   const validationCheck = (input) => {
-    console.log(input);
     const regex =
       /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/;
     if (input.trim().length === 0 || !regex.test(input)) return false;

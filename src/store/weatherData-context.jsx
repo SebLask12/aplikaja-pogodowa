@@ -31,7 +31,7 @@ const WeatherDataContextProvider = (props) => {
     setWeatherData(weatherDataS);
   };
 
-  const addCityHandler = (data) => {
+  const addCityHandler = (data) => {+
     //this is a function that adds a new city to the list, saves it to local storage
     console.log(data);
     setWeatherData((prevState) => {

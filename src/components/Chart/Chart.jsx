@@ -4,10 +4,10 @@ import { Chart as ChartJS } from "chart.js/auto";
 import Modal from "../UI/Modal/Modal";
 
 // import ChartConfig from "./ChartConfig";
-import getActualTimeLabel from "../../hooks/getActualTimeLabel";
-import getDataCity from "../../hooks/getDataCity";
+import useActualTimeLabel from "../../hooks/useActualTimeLabel";
+import useDataCity from "../../hooks/useDataCity";
 
-import Card from "../UI/Card";
+import Card from "../UI/StyledElements/Card";
 import classes from "./Chart.module.css";
 
 function Chart({ city, onDataChangeHandler }) {
@@ -50,7 +50,7 @@ function Chart({ city, onDataChangeHandler }) {
 
   async function renderChart(city, dataReverted) {
     try {
-      const data = await getDataCity(city);
+      const data = await useDataCity(city);
       if (data.status === "error") throw new Error(data.message);
 
       let timeArr = [];
@@ -63,7 +63,7 @@ function Chart({ city, onDataChangeHandler }) {
         humidityArr = dataReverted.map((data) => data.data.humidity);
       }
 
-      timeArr.push(getActualTimeLabel());
+      timeArr.push(useActualTimeLabel());
       tempArr.push(data.temp);
       humidityArr.push(data.humidity);
 
@@ -117,8 +117,8 @@ function Chart({ city, onDataChangeHandler }) {
 
     setInterval(async function () {
       //monitor the city data, download the new data and update the chart
-      const data = await getDataCity(city.name);
-      const time = getActualTimeLabel();
+      const data = await useDataCity(city.name);
+      const time = useActualTimeLabel();
       updateChart(chartInstance.current, time, data.temp, data.humidity);
       // dataFromContext(chartInstance.current, city);
       onDataChangeHandler({ time, data }, city.id);

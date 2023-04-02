@@ -1,4 +1,4 @@
-const getDataCity = async (city) => {
+const useDataCity = async (city) => {
   //this function will get the data from the API
   try {
     if (!city) throw new Error("City is required");
@@ -27,4 +27,4 @@ const getDataCity = async (city) => {
   }
 };
 
-export default getDataCity;
+export default useDataCity;

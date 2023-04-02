@@ -1,8 +1,8 @@
 import React, { useEffect, useContext } from "react";
 
 import clasess from "./App.module.css";
-import Cities from "./components/UI/Cities";
-import Chart from "./components/Weather/Chart";
+import Cities from "./components/UI/Weather/Cities";
+import Chart from "./components/Chart/Chart";
 
 import { WeatherDataContext } from "./store/weatherData-context";
 
