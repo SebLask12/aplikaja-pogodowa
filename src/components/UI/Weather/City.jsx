@@ -1,12 +1,16 @@
-import React, {useState} from "react";
+import React, { useState, useContext } from "react";
 
 import DeleteCity from "./DeleteCity";
+
+import { WeatherDataContext } from "../../../store/weatherData-context";
 
 import Card from "./../StyledElements/Card";
 import classes from "./City.module.css";
 
-function city({ city, onDelete }) {
+const City = ({ city }) => {
   const [isClicked, setIsClicked] = useState(false);
+
+  const weatherCtx = useContext(WeatherDataContext);
 
   const onClickHnadler = (e) => {
     e.preventDefault();
@@ -15,7 +19,7 @@ function city({ city, onDelete }) {
 
   const onDeleteHandler = (e) => {
     e.preventDefault();
-    onDelete(city.id);
+    weatherCtx.removeCity(city.id);
     onClose();
   };
 
@@ -24,15 +28,17 @@ function city({ city, onDelete }) {
   };
 
   return (
-    <Card className={classes.city}>
-      <li className={classes.button}>
-        <div>{city.name}</div>
-        <button
-          onClick={onClickHnadler}
-          className={classes.delete}
-        >
-          🗑
-        </button>
+    <React.Fragment>
+      <li className={classes.item}>
+        <Card className={classes.city}>
+          <h3>{city.name}</h3>
+          <button
+            onClick={onClickHnadler}
+            className={classes.delete}
+          >
+            🗑
+          </button>
+        </Card>
       </li>
       {isClicked && (
         <DeleteCity
@@ -41,7 +47,7 @@ function city({ city, onDelete }) {
           onDeleteHandler={onDeleteHandler}
         />
       )}
-    </Card>
+    </React.Fragment>
   );
-}
-export default city;
+};
+export default City;

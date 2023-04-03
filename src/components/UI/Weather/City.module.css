@@ -3,13 +3,16 @@
 }
 
 .city {
-  margin-bottom: 1rem;
-}
-.button {
-  position: relative;
   display: flex;
+  position: relative;
+  width: 100%;
   justify-content: center;
   align-items: center;
+}
+.item {
+  display: flex;
+  position: relative;
+  margin-bottom: 1rem;
 }
 
 .delete {
@@ -19,4 +22,5 @@
   right: 10%;
   font-size: 2rem;
   color: white;
+  padding: .5rem;
 }

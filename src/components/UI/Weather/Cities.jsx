@@ -7,10 +7,8 @@ import AddCity from "./AddCity";
 import Button from "./../StyledElements/Button";
 import Card from "./../StyledElements/Card";
 
-function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
+const Cities = ({ onAddCity, cityList, onDeleteCityHandler }) => {
   const [isAddingCity, setIsAddingCity] = useState(false);
-
-  console.log('render cities');
 
   const stopAddingCity = () => {
     setIsAddingCity(false);
@@ -48,6 +46,6 @@ function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
       </Card>
     </>
   );
-}
+};
 
 export default Cities;

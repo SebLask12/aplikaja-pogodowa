@@ -10,7 +10,6 @@ function App() {
   const weatherCtx = useContext(WeatherDataContext);
 
   useEffect(() => {
-    //this function will run when the component mounts
     weatherCtx.loadWeatherData();
   }, []);
 
@@ -21,12 +20,10 @@ function App() {
           onAddCity={weatherCtx.addCity}
           cityList={weatherCtx.weatherData}
           className={clasess.cities}
-          onDeleteCityHandler={weatherCtx.removeCity}
         />
         {!weatherCtx.isLoadedData && (
           <div style={{ color: "black" }}>Loading cities</div>
         )}
-        {/* {dataList} */}
         {weatherCtx.isLoadedData &&
           weatherCtx.weatherData.map((city) => (
             <Chart

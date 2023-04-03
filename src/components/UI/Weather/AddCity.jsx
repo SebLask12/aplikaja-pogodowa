@@ -1,26 +1,86 @@
-import React, { useRef, useEffect, useState, useReducer } from "react";
+import React, { useRef, useEffect, useReducer } from "react";
 
 import Modal from "../Modal/Modal";
 import Button from "../StyledElements/Button";
 import useDataCity from "../../../hooks/useDataCity";
 
+import { v4 as uuidv4 } from "uuid";
+
 import classes from "./AddCity.module.css";
 
-function AddCity({ onCancel, onAddCity }) {
+const initialState = {
+  isError: false,
+  message: null,
+  inputValue: null,
+  loading: false,
+  valid: null,
+};
+
+const AddCityReducer = (state, action) => {
+  switch (action.type) {
+    case "EMPTY_INPUT":
+      return {
+        ...state,
+        isError: true,
+        message: "Empty city name",
+      };
+
+    case "INVALID_NAME":
+      return {
+        ...state,
+        isError: true,
+        message: "Invalid city name",
+      };
+
+    case "CITY_NOT_FOUND":
+      return {
+        ...state,
+        isError: true,
+        message: "City not found",
+      };
+    case "UPDATE_INPUT":
+      return {
+        ...state,
+        inputValue: action.payload,
+      };
+    case "LOADING_CITY":
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case "LOADING_COMPLETE":
+      return {
+        ...state,
+        loading: false,
+      };
+    case "VALIDATED":
+      return {
+        ...state,
+        valid: classes.vailidityOk,
+      };
+    case "NOT_VALIDATED":
+      return {
+        ...state,
+        valid: classes.validityNotOk,
+      };
+    default:
+      return { ...state };
+  }
+};
+
+const AddCity = ({ onCancel, onAddCity }) => {
+  const [state, dispatch] = useReducer(AddCityReducer, initialState);
+
   const inputRef = useRef(null);
-  const [inputValue, setInputValue] = useState(null);
-  const [isWrongInput, setIsWrongInput] = useState(false);
-  const [validClass, setValidClass] = useState(null);
-  const [isValid, setIsValid] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const delayInput = setTimeout(() => {
-      if (inputValue !== null) {
-        if (validationCheck(inputValue)) {
-          setValidClass(classes.vailidityOk);
+      if (state.inputValue !== null) {
+        if (validationCheck(state.inputValue)) {
+          dispatch({ type: "VALIDATED" });
         } else {
-          setValidClass(classes.validityNotOk);
+          dispatch({ type: "NOT_VALIDATED" });
         }
       }
     }, 500);
@@ -28,34 +88,35 @@ function AddCity({ onCancel, onAddCity }) {
     return () => {
       clearTimeout(delayInput);
     };
-  }, [inputValue]);
+  }, [state.inputValue]);
 
   const handleChange = (e) => {
-    setInputValue(e.target.value);
+    dispatch({ type: "UPDATE_INPUT", payload: e.target.value });
   };
 
   const sumbitHandler = async (event) => {
     event.preventDefault();
-    
-    if (inputValue === null) {
-      setErrorMessage(`Enter city name!`);
-      return setIsWrongInput(true);
+
+    if (state.inputValue === null) {
+      return dispatch({ type: "EMPTY_INPUT" });
     }
 
-    if (!validationCheck(inputValue)) {
-      setErrorMessage(`Invalid city name! ${inputValue}`);
-      return setIsWrongInput(true);
+    if (!validationCheck(state.inputValue)) {
+      return dispatch({ type: "INVALID_NAME" });
     }
 
-    const res = await useDataCity(inputValue);
+    dispatch({ type: "LOADING_CITY" });
+
+    const res = await useDataCity(state.inputValue);
     if (res.status === "error") {
-      setErrorMessage(`City "${inputValue}" not found`)
-      return setIsWrongInput(true);
+      return dispatch({ type: "CITY_NOT_FOUND" });
     }
+
+    dispatch({ type: "LOADING_COMPLETE" });
 
     const cityData = {
-      name: inputValue,
-      id: new Date().toISOString(),
+      name: state.inputValue,
+      id: uuidv4(),
     };
 
     onAddCity(cityData);
@@ -71,19 +132,23 @@ function AddCity({ onCancel, onAddCity }) {
 
   return (
     <React.Fragment>
-      {isWrongInput && (
+      {state.isError && (
         <Modal onClose={onCancel}>
-          <h3>{errorMessage}</h3>
+          <h3>{state.message}</h3>
           <Button onClick={onCancel}>Close</Button>
         </Modal>
       )}
+      {state.loading && <p> Checking city in database... </p>}
       <form onSubmit={sumbitHandler}>
         <p>
-          <label className={classes.label} htmlFor="city">
+          <label
+            className={classes.label}
+            htmlFor="city"
+          >
             City
           </label>
           <input
-            className={`${classes.input} ${validClass}`}
+            className={`${classes.input} ${state.valid}`}
             type="text"
             name="city"
             id="city"
@@ -93,10 +158,18 @@ function AddCity({ onCancel, onAddCity }) {
           />
         </p>
         <p>
-          <Button type="reset" onClick={onCancel}>
+          <Button
+            type="reset"
+            onClick={onCancel}
+          >
             Cancel
           </Button>
-          <Button type="submit">Submit</Button>
+          <Button
+            type="submit"
+            disabled={state.loading}
+          >
+            Submit
+          </Button>
         </p>
       </form>
     </React.Fragment>
