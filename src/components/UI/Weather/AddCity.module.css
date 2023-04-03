@@ -1,0 +1,23 @@
+.label {
+  margin-right: .5rem;
+}
+
+.input {
+  padding: 0.35rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.validityNotOk {
+  
+  background-color: crimson;
+}
+
+.vailidityOk {
+  background-color: green;
+}
+
+.vailidityOk:focus {
+  outline: none;
+  border-color: #4f005f;
+}

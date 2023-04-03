@@ -2,11 +2,12 @@ import React, { useState } from "react";
 
 import classes from "./Cities.module.css";
 
-import Card from "./Card";
 import City from "./City";
 import AddCity from "./AddCity";
+import Button from "./../StyledElements/Button";
+import Card from "./../StyledElements/Card";
 
-function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
+const Cities = ({ onAddCity, cityList, onDeleteCityHandler }) => {
   const [isAddingCity, setIsAddingCity] = useState(false);
 
   const stopAddingCity = () => {
@@ -35,7 +36,7 @@ function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
             />
           ))}
         </ul>
-        {!isAddingCity && <button onClick={startAddingCity}>Add City</button>}
+        {!isAddingCity && <Button onClick={startAddingCity}>Add City</Button>}
         {isAddingCity && (
           <AddCity
             onAddCity={addCity}
@@ -45,6 +46,6 @@ function Cities({ onAddCity, cityList, onDeleteCityHandler }) {
       </Card>
     </>
   );
-}
+};
 
 export default Cities;
