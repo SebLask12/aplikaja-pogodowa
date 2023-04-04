@@ -7,7 +7,7 @@ import AddCity from "./AddCity";
 import Button from "./../StyledElements/Button";
 import Card from "./../StyledElements/Card";
 
-const Cities = ({ onAddCity, cityList, onDeleteCityHandler }) => {
+const Cities = ({cityList}) => {
   const [isAddingCity, setIsAddingCity] = useState(false);
 
   const stopAddingCity = () => {
@@ -16,11 +16,6 @@ const Cities = ({ onAddCity, cityList, onDeleteCityHandler }) => {
 
   const startAddingCity = () => {
     setIsAddingCity(true);
-  };
-
-  const addCity = (cityData) => {
-    onAddCity(cityData);
-    stopAddingCity();
   };
 
   return (
@@ -32,14 +27,12 @@ const Cities = ({ onAddCity, cityList, onDeleteCityHandler }) => {
             <City
               key={city.id}
               city={city}
-              onDelete={onDeleteCityHandler}
             />
           ))}
         </ul>
         {!isAddingCity && <Button onClick={startAddingCity}>Add City</Button>}
         {isAddingCity && (
           <AddCity
-            onAddCity={addCity}
             onCancel={stopAddingCity}
           />
         )}

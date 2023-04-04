@@ -1,60 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext } from "react";
 
-// import ChartConfig from "./ChartConfig";
 import useActualTimeLabel from "../../hooks/useActualTimeLabel";
 import useDataCity from "../../hooks/useDataCity";
+
+import { WeatherDataContext } from "../../store/weatherData-context";
 
 import ChartRender from "./ChartRender";
 
 import Card from "../UI/StyledElements/Card";
 import classes from "./Chart.module.css";
 
-const Chart = ({ city, onDataChangeHandler }) => {
-  const [newData, setNewData] = useState(null);
-  const [initialData, setInitialData] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+const Chart = ({ city }) => {
+  const weatherCtx = useContext(WeatherDataContext);
 
   const getData = async () => {
     try {
       const data = await useDataCity(city.name);
       const time = useActualTimeLabel();
-      return {
-        time: time,
-        data: data,
-      };
+
+      weatherCtx.newMeasure({data,time}, city.id);
+      
     } catch (e) {
       console.error(e);
     }
   };
-  useEffect(() => {
-    (async () => {
-      if (city.data) {
-        setInitialData(city.data);
-        setIsLoaded(true);
-      } else if (!city.data) {
-        setInitialData([await getData()]);
-        setIsLoaded(true);
-      }
 
-      setInterval(async () => {
-        //monitor the city data, download the new data and update the chart
-        const data = await getData();
-        setNewData(data);
-        onDataChangeHandler(data, city.id);
-      }, 60 * 1000);
-    })();
+  useEffect(() => {
+    if (city.data === undefined) {
+      getData();
+    }
+
+    setInterval(async () => {
+      //monitor the city data, download the new data and update the chart
+      getData();
+    }, 60 * 1000);
   }, []);
 
   return (
     <Card className={classes.chart}>
       <p className={classes.title}>{city.name}</p>
-      {!isLoaded && (<p>Loading chart data...</p>)}
-      {isLoaded && (
-        <ChartRender
-          initialData={initialData}
-          newData={newData}
-        />
-      )}
+      <ChartRender data={city.data} />
     </Card>
   );
 };

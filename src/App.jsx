@@ -17,7 +17,6 @@ function App() {
   return (
     <div className={clasess.App}>
         <Cities
-          onAddCity={weatherCtx.addCity}
           cityList={weatherCtx.weatherData}
           className={clasess.cities}
         />
@@ -29,7 +28,6 @@ function App() {
             <Chart
               key={city.id}
               city={city}
-              onDataChangeHandler={weatherCtx.newMeasure}
             />
           ))}
     </div>

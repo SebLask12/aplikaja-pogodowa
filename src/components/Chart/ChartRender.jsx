@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chart as ChartJS } from "chart.js/auto";
 
-const ChartRender = ({ initialData, newData }) => {
-  const [prevData, setPrevData] = useState(null);
+const ChartRender = ({ data }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    updateChart(chartInstance.current, data);
+  }, [data]);
 
   const chartContainer = useRef(null);
   const chartInstance = useRef(null);
@@ -10,33 +15,19 @@ const ChartRender = ({ initialData, newData }) => {
   ChartJS.defaults.color = "#9cafbb";
   ChartJS.defaults.borderColor = "#5e6c77";
 
-  const updateChart = (chart, newData) => {
-    //this function will add data to the chart
-    chart.data.labels.push(newData.time);
-    if (newData.data.temp) {
-      chart.data.datasets[0].data.push(newData.data.temp);
+  const updateChart = (chart, data) => {
+    if(data !== undefined) {
+      chart.data.labels = data.map((label) => label.time);
+      chart.data.datasets[0].data = data.map((data) => data.data.temp);
+      chart.data.datasets[1].data = data.map((data) => data.data.humidity);
+      chart.update();
     }
-    if (newData.data.humidity) {
-      chart.data.datasets[1].data.push(newData.data.humidity);
-    }
-    chart.update();
   };
-
-  if (prevData !== newData) {
-    updateChart(chartInstance.current, newData);
-    setPrevData(newData);
-  }
 
   useEffect(() => {
     let timeArr = [];
     let tempArr = [];
     let humidityArr = [];
-
-    if (initialData) {
-      timeArr = initialData.map((data) => data.time);
-      tempArr = initialData.map((data) => data.data.temp);
-      humidityArr = initialData.map((data) => data.data.humidity);
-    }
 
     if (chartInstance.current) {
       chartInstance.current.destroy();
@@ -64,6 +55,9 @@ const ChartRender = ({ initialData, newData }) => {
     };
     const context = chartContainer.current.getContext("2d");
     chartInstance.current = new ChartJS(context, chartConfig);
+
+    updateChart(chartInstance.current, data);
+    setIsLoaded(true);
 
     return () => {
       if (chartInstance.current) {
