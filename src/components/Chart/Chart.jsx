@@ -27,14 +27,12 @@ const Chart = ({ city }) => {
 
   useEffect(() => {
     if (city.data === undefined) {
-      console.log('get1')
       getData();
     }
 
     const interval = setInterval(async () => {
       //monitor the city data, download the new data and update the chart
       getData();
-      console.log('get2')
     }, 60 * 1000);
 
     return () => {
