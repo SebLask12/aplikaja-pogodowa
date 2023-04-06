@@ -21,7 +21,7 @@ function App() {
           className={clasess.cities}
         />
         {!weatherCtx.isLoadedData && (
-          <div style={{ color: "black" }}>Loading cities</div>
+          <div style={{ color: "black" }}>Loading cities from local storage..</div>
         )}
         {weatherCtx.isLoadedData &&
           weatherCtx.weatherData.map((city) => (

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chart as ChartJS } from "chart.js/auto";
+import City from "../UI/Weather/City";
 
 const ChartRender = ({ data }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -16,7 +17,7 @@ const ChartRender = ({ data }) => {
   ChartJS.defaults.borderColor = "#5e6c77";
 
   const updateChart = (chart, data) => {
-    if(data !== undefined) {
+    if(data) {
       chart.data.labels = data.map((label) => label.time);
       chart.data.datasets[0].data = data.map((data) => data.data.temp);
       chart.data.datasets[1].data = data.map((data) => data.data.humidity);

@@ -1,4 +1,10 @@
-import React, { useRef, useContext, useEffect, useReducer } from "react";
+import React, {
+  useRef,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 
 import Modal from "../Modal/Modal";
 import Button from "../StyledElements/Button";
@@ -43,17 +49,6 @@ const AddCityReducer = (state, action) => {
         ...state,
         inputValue: action.payload,
       };
-    case "LOADING_CITY":
-      return {
-        ...state,
-        loading: true,
-      };
-
-    case "LOADING_COMPLETE":
-      return {
-        ...state,
-        loading: false,
-      };
     case "VALIDATED":
       return {
         ...state,
@@ -70,6 +65,12 @@ const AddCityReducer = (state, action) => {
         isError: true,
         message: "City was already added",
       };
+    case "RESET_STATE":
+      return {
+        ...state,
+        isError: false,
+        message: "",
+      };
     default:
       return { ...state };
   }
@@ -77,6 +78,8 @@ const AddCityReducer = (state, action) => {
 
 const AddCity = ({ onCancel }) => {
   const [state, dispatch] = useReducer(AddCityReducer, initialState);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isAdding, setIsAdding] = useState(true);
 
   const inputRef = useRef(null);
 
@@ -100,7 +103,7 @@ const AddCity = ({ onCancel }) => {
 
   const handleChange = (e) => {
     dispatch({ type: "UPDATE_INPUT", payload: e.target.value });
-  };  
+  };
 
   const sumbitHandler = async (event) => {
     event.preventDefault();
@@ -113,25 +116,25 @@ const AddCity = ({ onCancel }) => {
       return dispatch({ type: "INVALID_NAME" });
     }
 
-    dispatch({ type: "LOADING_CITY" });
+    setIsDownloading(true);
+
     const res = await useDataCity(state.inputValue);
+
+    setIsDownloading(false);
 
     if (res.status === "error") {
       return dispatch({ type: "CITY_NOT_FOUND" });
     }
-    if (weatherCtx.weatherData.some(city => city.id === res.id)) {
+    if (weatherCtx.weatherData.some((city) => city.id === res.id)) {
       return dispatch({ type: "ALREADY_EXIST" });
     }
-
-    dispatch({ type: "LOADING_COMPLETE" });
 
     const cityData = {
       name: res.name,
       id: res.id,
     };
 
-    weatherCtx.addCity(cityData);
-    onCancel();
+    return onAddCity(cityData);
   };
 
   const validationCheck = (input) => {
@@ -141,15 +144,29 @@ const AddCity = ({ onCancel }) => {
     else return true;
   };
 
+  const closeModal = () => {
+    dispatch({ type: "RESET_STATE" });
+    inputRef.current.focus();
+  };
+
+  const onCancelHandler = () => {
+    onCancel();
+  };
+
+  const onAddCity = (cityData) => {
+    weatherCtx.addCity(cityData);
+    onCancel();
+  }
+
   return (
     <React.Fragment>
       {state.isError && (
         <Modal onClose={onCancel}>
           <h3>{state.message}</h3>
-          <Button onClick={onCancel}>Close</Button>
+          <Button onClick={closeModal}>Close</Button>
         </Modal>
       )}
-      {state.loading && <p> Checking city in database... </p>}
+      {isDownloading && <p> Checking city in database... </p>}
       <form onSubmit={sumbitHandler}>
         <p>
           <label className={classes.label} htmlFor="city">
@@ -166,7 +183,7 @@ const AddCity = ({ onCancel }) => {
           />
         </p>
         <p>
-          <Button type="reset" onClick={onCancel}>
+          <Button type="reset" onClick={onCancelHandler}>
             Cancel
           </Button>
           <Button type="submit" disabled={state.loading}>

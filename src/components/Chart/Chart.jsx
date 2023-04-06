@@ -13,6 +13,8 @@ import classes from "./Chart.module.css";
 const Chart = ({ city }) => {
   const weatherCtx = useContext(WeatherDataContext);
 
+  const intervalDelay = 60 * 1000; // milliseconds
+
   const getData = async () => {
     try {
       const data = await useDataCity(city.name);
@@ -26,14 +28,14 @@ const Chart = ({ city }) => {
   };
 
   useEffect(() => {
-    if (city.data === undefined) {
+    if (!city.data) {
       getData();
     }
 
     const interval = setInterval(async () => {
       //monitor the city data, download the new data and update the chart
       getData();
-    }, 60 * 1000);
+    }, intervalDelay);
 
     return () => {
       clearInterval(interval);
