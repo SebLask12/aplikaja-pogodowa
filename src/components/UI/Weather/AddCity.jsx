@@ -123,7 +123,7 @@ const AddCity = ({ onCancel }) => {
 
     setIsDownloading(false);
 
-    if (res.status === "error") {
+    if (res.isError) {
       return dispatch({ type: "CITY_NOT_FOUND" });
     }
     if (weatherCtx.weatherData.some((city) => city.id === res.id)) {

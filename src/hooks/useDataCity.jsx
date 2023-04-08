@@ -26,10 +26,10 @@ const useDataCity = async (city) => {
       humidity,
       id,
       name,
-      status: "ok",
+      isError: false,
     };
   } catch (error) {
-    return { status: "error", message: error };
+    return { isError: true, message: error };
   }
 };
 
