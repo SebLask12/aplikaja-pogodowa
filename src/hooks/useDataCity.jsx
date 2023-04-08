@@ -1,10 +1,11 @@
+const API_KEY = "9fda02f1840193b81e28ff9fa5b755c2";
+
 const useDataCity = async (city) => {
-  //this function will get the data from the API
   try {
     if (!city) throw new Error("City is required");
 
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=9fda02f1840193b81e28ff9fa5b755c2`
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`
     );
     if (!response.ok) {
       if (response.status === 404) {
@@ -14,13 +15,17 @@ const useDataCity = async (city) => {
       }
     }
 
-    const data = await response.json();
+    const {
+      main: { temp, humidity },
+      id,
+      name,
+    } = await response.json();
 
     return {
-      temp: data.main.temp - 273.15,
-      humidity: data.main.humidity,
-      id: data.id,
-      name: data.name,
+      temp: temp - 273.15,
+      humidity,
+      id,
+      name,
       status: "ok",
     };
   } catch (error) {

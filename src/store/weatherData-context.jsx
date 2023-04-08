@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 
-export const WeatherDataContext = React.createContext({
+export const WeatherDataContext = createContext({
   weatherData: [],
   isLoadedData: false,
   addCity: () => {},
@@ -16,20 +16,18 @@ const WeatherDataContextProvider = (props) => {
 
   useEffect(() => {
     if (isLoadedData) {
-      saveWehatherDataToLocalHandler(weatherData);
+      saveWeahtherDataToLocalHandler(weatherData);
     }
   }, [weatherData]);
 
-  const loadWeatherDataHandler = () => {
-    //this is a function that returns a list of cities
-    const res = JSON.parse(localStorage.getItem("weatherData"));
+  const loadWeatherDataHandler = async () => {
+    const res = await JSON.parse(localStorage.getItem("weatherData"));
+    setIsLoadedData(true);
     if (!res) return;
     setWeatherData(res);
-    setIsLoadedData(true);
   };
 
   const addCityHandler = (data) => {
-      //this is a function that adds a new city to the list, saves it to local storage
     setWeatherData((prevState) => {
       if (prevState === null) {
         return [data];
@@ -38,13 +36,11 @@ const WeatherDataContextProvider = (props) => {
       }
     });
   };
-  const remvoeCityHandler = (id) => {
-    //this is a function that deletes a city from the list, saves it to local storage
+  const removeCityHandler = (id) => {
     setWeatherData((prevState) => prevState.filter((city) => city.id !== id));
   };
 
   const newMeasureHandler = (data, cityId) => {
-    //this is a function that updates the weather data for a city, saves it to local storage
     setWeatherData((prevState) => {
       return prevState.map((city) => {
         if (cityId === city.id && !city.data) {
@@ -66,8 +62,7 @@ const WeatherDataContextProvider = (props) => {
     });
   };
 
-  const saveWehatherDataToLocalHandler = (data) => {
-    //this is a function that saves a list of cities to local storage
+  const saveWeahtherDataToLocalHandler = (data) => {
     localStorage.setItem("weatherData", JSON.stringify(data));
   };
 
@@ -86,16 +81,16 @@ const WeatherDataContextProvider = (props) => {
   };
 
   const contextValue = {
-    weatherData: weatherData,
-    isLoadedData: isLoadedData,
+    weatherData,
+    isLoadedData,
     addCity: addCityHandler,
-    removeCity: remvoeCityHandler,
+    removeCity: removeCityHandler,
     newMeasure: newMeasureHandler,
     loadWeatherData: loadWeatherDataHandler,
     clearDataCity: clearDataCityHandler,
   };
 
-  return (  
+  return (
     <WeatherDataContext.Provider value={contextValue}>
       {props.children}
     </WeatherDataContext.Provider>

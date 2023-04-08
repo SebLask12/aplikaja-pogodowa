@@ -79,27 +79,28 @@ const AddCityReducer = (state, action) => {
 const AddCity = ({ onCancel }) => {
   const [state, dispatch] = useReducer(AddCityReducer, initialState);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [isAdding, setIsAdding] = useState(true);
 
   const inputRef = useRef(null);
 
   const weatherCtx = useContext(WeatherDataContext);
 
+  const { isError, message, inputValue, loading, valid } = state;
+
   useEffect(() => {
     const delayInput = setTimeout(() => {
-      if (state.inputValue !== null) {
-        if (validationCheck(state.inputValue)) {
+      if (inputValue) {
+        if (validationCheck(inputValue)) {
           dispatch({ type: "VALIDATED" });
         } else {
           dispatch({ type: "NOT_VALIDATED" });
         }
       }
-    }, 500);
+    }, 300);
 
     return () => {
       clearTimeout(delayInput);
     };
-  }, [state.inputValue]);
+  }, [inputValue]);
 
   const handleChange = (e) => {
     dispatch({ type: "UPDATE_INPUT", payload: e.target.value });
@@ -108,17 +109,17 @@ const AddCity = ({ onCancel }) => {
   const sumbitHandler = async (event) => {
     event.preventDefault();
 
-    if (state.inputValue === null) {
+    if (!inputValue) {
       return dispatch({ type: "EMPTY_INPUT" });
     }
 
-    if (!validationCheck(state.inputValue)) {
+    if (!validationCheck(inputValue)) {
       return dispatch({ type: "INVALID_NAME" });
     }
 
     setIsDownloading(true);
 
-    const res = await useDataCity(state.inputValue);
+    const res = await useDataCity(inputValue);
 
     setIsDownloading(false);
 
@@ -156,24 +157,27 @@ const AddCity = ({ onCancel }) => {
   const onAddCity = (cityData) => {
     weatherCtx.addCity(cityData);
     onCancel();
-  }
+  };
 
   return (
-    <React.Fragment>
-      {state.isError && (
+    <>
+      {isError && (
         <Modal onClose={onCancel}>
-          <h3>{state.message}</h3>
+          <h3>{message}</h3>
           <Button onClick={closeModal}>Close</Button>
         </Modal>
       )}
       {isDownloading && <p> Checking city in database... </p>}
       <form onSubmit={sumbitHandler}>
         <p>
-          <label className={classes.label} htmlFor="city">
+          <label
+            className={classes.label}
+            htmlFor="city"
+          >
             City
           </label>
           <input
-            className={`${classes.input} ${state.valid}`}
+            className={`${classes.input} ${valid}`}
             type="text"
             name="city"
             id="city"
@@ -183,15 +187,21 @@ const AddCity = ({ onCancel }) => {
           />
         </p>
         <p>
-          <Button type="reset" onClick={onCancelHandler}>
+          <Button
+            type="reset"
+            onClick={onCancelHandler}
+          >
             Cancel
           </Button>
-          <Button type="submit" disabled={state.loading}>
+          <Button
+            type="submit"
+            disabled={loading}
+          >
             Submit
           </Button>
         </p>
       </form>
-    </React.Fragment>
+    </>
   );
 };
 

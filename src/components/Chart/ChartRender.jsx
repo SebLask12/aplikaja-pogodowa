@@ -1,35 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Chart as ChartJS } from "chart.js/auto";
-import City from "../UI/Weather/City";
 
 const ChartRender = ({ data }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!isLoaded) return;
-    updateChart(chartInstance.current, data);
-  }, [data]);
-
   const chartContainer = useRef(null);
   const chartInstance = useRef(null);
 
   ChartJS.defaults.color = "#9cafbb";
   ChartJS.defaults.borderColor = "#5e6c77";
 
-  const updateChart = (chart, data) => {
-    if(data) {
-      chart.data.labels = data.map((label) => label.time);
-      chart.data.datasets[0].data = data.map((data) => data.data.temp);
-      chart.data.datasets[1].data = data.map((data) => data.data.humidity);
-      chart.update();
+  const updateChart = () => {
+    if (data) {
+      chartInstance.current.data.labels = data.map((label) => label.time);
+      chartInstance.current.data.datasets[0].data = data.map(
+        (data) => data.data.temp
+      );
+      chartInstance.current.data.datasets[1].data = data.map(
+        (data) => data.data.humidity
+      );
+      chartInstance.current.update();
     }
   };
 
   useEffect(() => {
-    let timeArr = [];
-    let tempArr = [];
-    let humidityArr = [];
-
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
@@ -37,17 +29,17 @@ const ChartRender = ({ data }) => {
     const chartConfig = {
       type: "line",
       data: {
-        labels: timeArr,
+        labels: [],
         datasets: [
           {
             label: "Temperature [℃]",
-            data: tempArr,
+            data: [],
             pointRadius: 5,
             pointHoverRadius: 6,
           },
           {
             label: "Humidity [%]",
-            data: humidityArr,
+            data: [],
             pointRadius: 5,
             pointHoverRadius: 6,
           },
@@ -57,15 +49,16 @@ const ChartRender = ({ data }) => {
     const context = chartContainer.current.getContext("2d");
     chartInstance.current = new ChartJS(context, chartConfig);
 
-    updateChart(chartInstance.current, data);
-    setIsLoaded(true);
-
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
       }
     };
   }, []);
+
+  useEffect(() => {
+    updateChart();
+  }, [data]);
 
   return <canvas ref={chartContainer}></canvas>;
 };
