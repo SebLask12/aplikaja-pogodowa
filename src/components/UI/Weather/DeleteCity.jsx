@@ -6,7 +6,7 @@ import Button from "./../StyledElements/Button";
 const deleteCity = ({ cityName, onCloseHandler, onDeleteHandler }) => {
   return (
     <Modal onClose={onCloseHandler}>
-      <h2>Do you want to remove the city of {cityName} from the list?</h2>
+      <h2>Do you want to remove the city {cityName} from the list?</h2>
       <Button onClick={onDeleteHandler}>Yes</Button>
       <Button onClick={onCloseHandler}>No</Button>
     </Modal>
